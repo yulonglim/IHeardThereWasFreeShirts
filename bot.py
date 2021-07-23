@@ -235,7 +235,7 @@ def main():
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path='1855391169:AAGuzaD2E6AA_mDPXRIuhT5IPv9JZ3ERlFU')
-    updater.bot.setWebhook('https://git.heroku.com/food-santa.git/' + '1855391169:AAGuzaD2E6AA_mDPXRIuhT5IPv9JZ3ERlFU')
+    updater.bot.setWebhook('https://food-santa.herokuapp.com/' + '1855391169:AAGuzaD2E6AA_mDPXRIuhT5IPv9JZ3ERlFU')
 
     updater.idle()
 
