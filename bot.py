@@ -1,5 +1,4 @@
 import bs4, sys, requests, os, logging, re
-
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (
     Updater,
@@ -10,40 +9,49 @@ from telegram.ext import (
     CallbackContext,
 )
 
+# Session class
+from Session import Session
+
+# Abstraction of session dictionary
+from db import (
+    sessionExists,
+    addSession,
+    getSession,
+)
+
+
 #Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
 
 
+# Dictionary of all sessions
 
 
-def getSeatsAmount():
+def startSession(update, context):
+    chatID = update.effective_chat.id;
+    if chatID > 0:
+        # User sent this message
+        context.bot.send_message(chatID, text = "This command should be used in a group")
+
+    elif sessionExists(chatID) == False:
+        context.bot.send_message(chatID, text = """
+Hey yall, click join to participate in this session.""")
+
+        addSession(chatID)
+        # Group sent this message
     
-    # Go to the webpage 
-    req = requests.get('http://wwwapps.ehabitat.net/rvrcdh/')
-    req.raise_for_status()
+    elif sessionExists(chatID) == True:
+        context.bot.send_message(chatID, text = """
+Dude wtf the session already exists""")
+
+    else:
+        context.bot.send_message(chatID, text = """
+you shouldnt reach here""")
 
 
-    # Get capacity
-    soup = bs4.BeautifulSoup(req.text, 'html.parser')
-    pic = soup.select('body > div > div:nth-child(1) > div > div > h1')
-    textToRegex = pic[0].text.strip()
+        
 
-    
-    piclinkRegex = re.compile(r'(\d)+ / (\d)+')
-    mo = piclinkRegex.search(textToRegex)
-    return mo.group()
-
-    
-
-
-def checkSeats(update, context):
-    capacity = getSeatsAmount()
-    context.bot.send_message(chat_id=update.effective_chat.id, text = "{} seats taken".format(capacity))
-
-
-def checkFucksGiven(update, context):
-    context.bot.sendPhoto(chat_id=update.effective_chat.id, photo='https://i.pinimg.com/originals/3f/8e/c9/3f8ec91740507ec9d82a2acee1e1635a.jpg')
 
 
 
@@ -51,7 +59,7 @@ def start(update, context):
     name = update.message.from_user.first_name;
     context.bot.send_message(chat_id=update.effective_chat.id, text = """
 Hello {}!
-/checkseats
+This bot allows you to eat with your fwiends UwU
 """.format(name))
 
 
@@ -64,9 +72,7 @@ def main():
 
     dispatcher.add_handler(CommandHandler('start', start))
 
-    dispatcher.add_handler(CommandHandler('checkseats', checkSeats))
-
-    dispatcher.add_handler(CommandHandler('checkfucksgiven', checkFucksGiven))
+    dispatcher.add_handler(CommandHandler('startsession', startSession))
     
     updater.start_polling()
 
