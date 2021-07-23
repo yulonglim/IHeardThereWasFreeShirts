@@ -174,17 +174,18 @@ def receivePollAnswer(update: Update, context: CallbackContext) -> None:
         context.bot.stop_poll(quiz_data["chat_id"], quiz_data["message_id"])
 
 
+def inputDetail(update, context):
+    return 0
+    # address = update.message.text
+    # currentUser = update.effective_user
+    # session = getSession(update.effective_chat.id)
+    # session.userList[currentUser.id].setAddress(str(address))
+    # print(address)
+
 
 def test(update, context):
     chatID = update.effective_chat.id
     getSession(chatID).startAssignment()
-
-
-
-
-        
-
-
 
 
 def main():
@@ -201,14 +202,13 @@ def main():
 
     dispatcher.add_handler(CommandHandler('randomassign', test))
 
+    dispatcher.add_handler(CommandHandler('details', inputDetail))
+
     dispatcher.add_handler(PollHandler(receivePollAnswer))
 
-
-
     updater.start_polling()
-    updater.idle()
-    
 
+    updater.idle()
 
 
 if __name__ == '__main__':
