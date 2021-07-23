@@ -11,3 +11,10 @@ def getSession(chatID):
 
 def sessionExists(chatID):
     return (chatID in sessions.keys())
+
+def deleteSession(chatID):
+    if sessionExists(chatID):
+        del sessions["chatID"]
+        return True
+    else:
+        return False

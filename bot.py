@@ -25,6 +25,7 @@ from db import (
     sessionExists,
     addSession,
     getSession,
+    deleteSession
 )
 
 #Enable logging
@@ -78,20 +79,16 @@ def closeSession(update, context) -> None:
 
     # Generate message
     chatID = update.effective_chat.id
-    users = getSession(chatID).userList
-    print(users)
-    textString = "Session closed"
-    textString = textString + "Your randomised assignments will be PMed to you shortly"
+    textString = "Randomising assignments"
 
-    # Delete session and reset session
+    # Delete and reset session
     context.bot.delete_message(chat_id=chatID, message_id=sessionMessage.message_id)
     sessionMessage = 0
+    if (deleteSession(chatID)):
+        context.bot.send_message(chatID, text = "Session closed")
+    else:
+        context.bot.send_message(chatID, text = "There's no session to delete bruh")
 
-    # Send out confirmation message
-    context.bot.send_message(chatID, text = textString)
-
-
-    # Randomise assignments
 
 
 def button(update: Update, context: CallbackContext) -> None:
