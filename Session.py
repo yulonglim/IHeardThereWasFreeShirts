@@ -15,7 +15,7 @@ class Session:
         self.userList = {}
 
         # Price range for the group
-        self.priceRange = 0
+        self.priceRange = ""
 
     def addUser(self, user):
         if user.id not in self.userList:

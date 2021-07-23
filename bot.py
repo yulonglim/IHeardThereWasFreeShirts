@@ -154,17 +154,28 @@ def setPriceRange(update, context):
 
 
 def receivePollAnswer(update: Update, context: CallbackContext) -> None:
-    poll_id = update['poll']['id']
+    poll_id = update.poll.id
 
     # the bot can receive closed poll updates we don't care about
     if update.poll.is_closed:
         return
 
-    chatID = context.bot_data[poll_id]["chat_id"]
+    chatID = context.bot_data[poll_id]['chat_id']
     if update.poll.total_voter_count == len(getSession(chatID).userList):
         try:
             quiz_data = context.bot_data[update.poll.id]
-            context.bot.sendMessage(chatID, '{}'.format(quiz_data))
+            
+
+            # Get array of PollOption objects
+            optionArray = update.poll.options
+            highestVote = 0
+            highestPrice = ""
+            for option in optionArray:
+                if option.voter_count > highestVote:
+                    highestPrice = option.text
+            getSession(chatID).priceRange = highestPrice
+
+            context.bot.sendMessage(chatID, 'As per the votes, your recommended price range is {}. Check your DMs'.format(highestPrice))
 
             # TODO carry on the process (Get highest option, PM the participants)
 
