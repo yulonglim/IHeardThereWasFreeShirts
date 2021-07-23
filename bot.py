@@ -235,7 +235,7 @@ def main():
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path='1555884710:AAHOhp9X1WNq_5zo9G_C0qxtMVn4YCb0ZxQ')
-    updater.bot.setWebhook('https://frozen-plateau-30151.herokuapp.com/' + '1555884710:AAHOhp9X1WNq_5zo9G_C0qxtMVn4YCb0ZxQ')
+    updater.bot.setWebhook('https://git.heroku.com/food-santa.git/' + '1855391169:AAGuzaD2E6AA_mDPXRIuhT5IPv9JZ3ERlFU')
 
     updater.idle()
 
