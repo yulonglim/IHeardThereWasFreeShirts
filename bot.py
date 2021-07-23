@@ -26,7 +26,6 @@ from db import (
     getSession,
 )
 
-
 #Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
@@ -45,10 +44,10 @@ This bot allows you to eat with your fwiends UwU
 """.format(name))
 
 
-
+sessionMessageID = 0
 
 def startSession(update, context):
-    chatID = update.effective_chat.id;
+    chatID = update.effective_chat.id
     if chatID > 0:
         # User sent this message
         context.bot.send_message(chatID, text = "This command should be used in a group")
@@ -59,19 +58,24 @@ def startSession(update, context):
 
         reply_keyboard = [[InlineKeyboardButton("Join", callback_data="Join")]]
         reply_markup=InlineKeyboardMarkup(reply_keyboard)
-        context.bot.sendMessage(chatID, 'Hey yall, click join to participate in this session.', reply_markup = reply_markup)
+        context.bot.sendMessage(chatID, 'Hey yall, click join to participate in this session. Once everydone is done, you may /closesession', reply_markup = reply_markup)
 
     else:
         # Session already exists in group
-
-        # TESTING
-        members = getSession(chatID).userList
-
         context.bot.send_message(chatID, text = """
-dude wtf a session alr exists.
-{}""".format(members))
+dude wtf a session alr exists.""")
         
 
+def closeSession(update, context) -> None:
+    chatID = update.effective_chat.id
+    users = getSession(chatID).userList
+    textString = "Session closed\nThose in the session:\n"
+    for user in users.values:
+        textString = textString + user.name + '\n'
+    context.bot.send_message(chatID, text = textString)
+
+
+    # Randomise assignments
 
 
 def button(update: Update, context: CallbackContext) -> None:
@@ -100,11 +104,12 @@ def main():
     dispatcher.add_handler(CommandHandler('start', start))
 
     dispatcher.add_handler(CommandHandler('startsession', startSession))
-    
+
+    dispatcher.add_handler(CommandHandler('closesession', closeSession))
+
     dispatcher.add_handler(CallbackQueryHandler(button))
 
     updater.start_polling()
-
     updater.idle()
     
 

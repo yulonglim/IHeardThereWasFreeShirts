@@ -1,7 +1,8 @@
 class User:
 
-	def __init__(self, session, userId):
+	def __init__(self, session, username, userId):
 		self.session = session
+		self.username = username
 		self.userId = userId
 		self.address = ""
 		self.hunger = 0

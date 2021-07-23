@@ -9,10 +9,9 @@ class Session:
         # List of Users in the session.
         self.userList = {}
 
-    #TODO append user instead of their userID
-    def addUser(self, userID):
-        newUser = User(self.chatID, userID)
-        self.userList[userID] = newUser
+    def addUser(self, user):
+        newUser = User(self.chatID, user.username, user.userid)
+        self.userList[user.id] = newUser
 
     def removeUser(self, userID):
         del self.userList[userID]
