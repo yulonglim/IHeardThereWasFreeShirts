@@ -1,3 +1,7 @@
+import random
+
+import requests
+
 from User import User
 
 class Session:
@@ -44,10 +48,25 @@ class Session:
     def startAssignment(self):
         # randomise the start assignment thingy, assign each user a random user
         # for loop through the dictionary and use the inbuilt add user function
-        return 0
+        keys = list(self.userList.keys())
+        print(keys)
+        random.shuffle(keys)
+        for index, key in enumerate(keys):
+            if index + 1 == len(keys):
+                self.userList[key].setAssigned(self.userList[keys[0]])
+            else:
+                self.userList[key].setAssigned(self.userList[keys[index + 1]])
+        for i in self.userList.values():
+            print(i.assigned.username)
+
 
     def messageUser(self, userID):
         # call this function everytime we assign a user. A user is ready to be messaged when he/she has the assigned user field.
+        # send_text = 'https://api.telegram.org/bot1855391169:AAGuzaD2E6AA_mDPXRIuhT5IPv9JZ3ERlFU/sendMessage?chat_id=' + userID + '&parse_mode=Markdown&text=' + "hello"
+        #
+        # response = requests.get(send_text)
+        #
+        # return response.json()
         return 0
 
     

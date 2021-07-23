@@ -137,7 +137,9 @@ def button(update: Update, context: CallbackContext) -> None:
             context.bot.sendMessage(chatID, 'Session already started. Check your DMs.'.format(user.username))
 
 
-
+def test(update, context):
+    chatID = update.effective_chat.id
+    getSession(chatID).startAssignment()
 
 
 
@@ -158,6 +160,8 @@ def main():
     dispatcher.add_handler(CommandHandler('closesession', closeSession))
 
     dispatcher.add_handler(CallbackQueryHandler(button))
+
+    dispatcher.add_handler(CommandHandler('randomassign', test))
 
     updater.start_polling()
     updater.idle()
