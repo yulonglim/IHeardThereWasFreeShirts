@@ -90,9 +90,14 @@ def button(update: Update, context: CallbackContext) -> None:
         chatID = update.effective_chat.id
 
         # Add user to Session
-        context.bot.sendMessage(chatID, '{} joined the session!'.format(user.username))
-        session = getSession(update.effective_chat.id);
-        session.addUser(user)
+        session = getSession(update.effective_chat.id)
+
+        if (session.addUser(user)):
+            context.bot.sendMessage(chatID, '{} joined the session!'.format(user.username))
+        else:
+            context.bot.sendMessage(chatID, '{} is already in the session!'.format(user.username))
+
+        
 
 
 
