@@ -5,7 +5,8 @@ from telegram import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
     Update,
-    chat
+    chat,
+    poll
 )
 from telegram.ext import (
     Updater,
@@ -15,6 +16,7 @@ from telegram.ext import (
     ConversationHandler,
     CallbackContext,
     CallbackQueryHandler,
+    PollHandler,
 )
 
 # Session class
@@ -132,9 +134,45 @@ def button(update: Update, context: CallbackContext) -> None:
         session = getSession(update.effective_chat.id)
 
         if session.startSession():
-            context.bot.sendMessage(chatID, 'Session started. Check your DMs.'.format(user.username))
+            context.bot.sendMessage(chatID, 'Session started!')
+            setPriceRange(update, context);
         else:
-            context.bot.sendMessage(chatID, 'Session already started. Check your DMs.'.format(user.username))
+            context.bot.sendMessage(chatID, 'Session already started. Check your DMs.')
+
+def setPriceRange(update, context):
+    options = ['<$5','$5 - $10','$10 - $15', '$15 - $20', '>$20']
+    chatID = update.effective_chat.id
+    message = context.bot.send_poll(chatID, "Let's standardise a price range! /next to continue the process", options, is_anonymous=False)
+
+
+    # Save some info about the poll the bot_data for later use in receivePollAnswer
+    payload = {
+        message.poll.id: {"chat_id": update.effective_chat.id, "message_id": message.message_id}
+    }
+
+    context.bot_data.update(payload)
+
+
+def receivePollAnswer(update: Update, context: CallbackContext) -> None:
+    poll_id = update['poll']['id']
+
+    # the bot can receive closed poll updates we don't care about
+    if update.poll.is_closed:
+        return
+
+    chatID = context.bot_data[poll_id]["chat_id"]
+    if update.poll.total_voter_count == len(getSession(chatID).userList):
+        try:
+            quiz_data = context.bot_data[update.poll.id]
+            context.bot.sendMessage(chatID, '{}'.format(quiz_data))
+
+            # TODO carry on the process (Get highest option, PM the participants)
+
+        # poll answer update is from an old poll
+        except KeyError:
+            return
+        context.bot.stop_poll(quiz_data["chat_id"], quiz_data["message_id"])
+
 
 
 def test(update, context):
@@ -162,6 +200,10 @@ def main():
     dispatcher.add_handler(CallbackQueryHandler(button))
 
     dispatcher.add_handler(CommandHandler('randomassign', test))
+
+    dispatcher.add_handler(PollHandler(receivePollAnswer))
+
+
 
     updater.start_polling()
     updater.idle()

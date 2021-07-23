@@ -14,6 +14,9 @@ class Session:
         # List of Users in the session.
         self.userList = {}
 
+        # Price range for the group
+        self.priceRange = 0
+
     def addUser(self, user):
         if user.id not in self.userList:
             newUser = User(self.chatID, user.username, user.id)    
