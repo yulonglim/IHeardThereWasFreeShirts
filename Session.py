@@ -1,7 +1,5 @@
 import random
-
 import requests
-
 from User import User
 
 class Session:
