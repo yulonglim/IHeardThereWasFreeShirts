@@ -15,4 +15,5 @@ The bot helps to schedule virtual meals with your friend groups, in which each f
 
 # Credits
 LifeHack2021 Group 091
+
 Jonathan Lee, Koh Jia Xian, Lim Yu Long, Renee Lee
