@@ -1,5 +1,6 @@
 from Session import Session
 
+# uh this is just a dictionary of sessions, in which has a dictionary of users
 sessions = {};
 
 def addSession(chatID):

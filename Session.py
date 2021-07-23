@@ -6,6 +6,10 @@ class Session:
 
         # List of Users in the session.
         self.userList = []
+
+    #TODO append user instead of their userID
+    def addUser(self, userID):
+        self.userList.append(userID)
     
     # MUTATORS
     # def setRequestedIndex(self, index):
