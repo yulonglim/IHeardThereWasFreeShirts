@@ -36,9 +36,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                      level=logging.INFO)
 
 
-
-
-
 # /start command
 def start(update, context):
     name = update.message.from_user.first_name;
@@ -50,6 +47,7 @@ This bot allows you to eat with your fwiends UwU
 
 
 sessionMessage = 0
+
 
 def startSession(update, context):
     global sessionMessage
@@ -91,7 +89,6 @@ def closeSession(update, context) -> None:
         context.bot.send_message(chatID, text = "Session closed")
     else:
         context.bot.send_message(chatID, text = "There's no session to delete bruh")
-
 
 
 def button(update: Update, context: CallbackContext) -> None:
@@ -143,7 +140,7 @@ def button(update: Update, context: CallbackContext) -> None:
 
 
 def setPriceRange(update, context):
-    options = ['<$5','$5 - $10','$10 - $15', '$15 - $20', '>$20']
+    options = ['<$5', '$5 - $10', '$10 - $15', '$15 - $20', '>$20']
     chatID = update.effective_chat.id
     message = context.bot.send_poll(chatID, "Let's standardise a price range!", options, is_anonymous=False)
 
@@ -215,7 +212,7 @@ def getDetail(update, context):
     update.message.reply_text("You've sent " + address3 + ". Please wait for the rest to complete their entry!")
     if finished == True:
         for user in getSession(sess).userList.values():
-            Session.messageUser(getSession(sess), user.userId, "Hello your sender said " + user.assigned.address)
+            Session.messageUser(getSession(sess), user.userId, "Hello! you'll be sending your goods to "+ user.assigned.username + " here are the details: " + user.assigned.address + ". Have Fun!!!!")
 
 
 def test(update, context):
