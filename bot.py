@@ -1,4 +1,4 @@
-import bs4, sys, requests, os, logging, re
+import os, logging
 from telegram import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
@@ -207,12 +207,13 @@ def getDetail(update, context):
             Session.messageUser(getSession(sess), user.userId, "Hello! you'll be sending your goods to "+ user.assigned.username + ", here are the details: " + user.assigned.address + ". Have Fun!!!!")
 
 
-def test(update, context):
-    chatID = update.effective_chat.id
-    getSession(chatID).startAssignment()
+# def test(update, context):
+#     chatID = update.effective_chat.id
+#     getSession(chatID).startAssignment()
 
 
 def main():
+    PORT = int(os.environ.get('PORT', 5000))
     updater = Updater(token = '1855391169:AAGuzaD2E6AA_mDPXRIuhT5IPv9JZ3ERlFU', use_context = True)
     dispatcher = updater.dispatcher
 
@@ -224,13 +225,17 @@ def main():
 
     dispatcher.add_handler(CallbackQueryHandler(button))
 
-    dispatcher.add_handler(CommandHandler('randomassign', test))
+    # dispatcher.add_handler(CommandHandler('randomassign', test))
 
     dispatcher.add_handler(CommandHandler('details', getDetail))
 
     dispatcher.add_handler(PollHandler(receivePollAnswer))
 
-    updater.start_polling()
+    # updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path='1555884710:AAHOhp9X1WNq_5zo9G_C0qxtMVn4YCb0ZxQ')
+    updater.bot.setWebhook('https://frozen-plateau-30151.herokuapp.com/' + '1555884710:AAHOhp9X1WNq_5zo9G_C0qxtMVn4YCb0ZxQ')
 
     updater.idle()
 
