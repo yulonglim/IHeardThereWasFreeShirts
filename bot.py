@@ -56,7 +56,7 @@ def startSession(update, context):
         # Add session to list of sessions
         addSession(chatID)
 
-        reply_keyboard = [[InlineKeyboardButton("Join", callback_data="Join")]]
+        reply_keyboard = [[InlineKeyboardButton("Join", callback_data="Join")], [InlineKeyboardButton("Leave", callback_data="Leave")]]
         reply_markup=InlineKeyboardMarkup(reply_keyboard)
         context.bot.sendMessage(chatID, 'Hey yall, click join to participate in this session. Once everydone is done, you may /closesession', reply_markup = reply_markup)
 
@@ -96,6 +96,21 @@ def button(update: Update, context: CallbackContext) -> None:
             context.bot.sendMessage(chatID, '{} joined the session!'.format(user.username))
         else:
             context.bot.sendMessage(chatID, '{} is already in the session!'.format(user.username))
+    elif choice == 'Leave':
+                 # Get chat ID
+        chatID = update.effective_chat.id
+
+        # Add user to Session
+        session = getSession(update.effective_chat.id)
+        if (session.removeUser(user)):
+            context.bot.sendMessage(chatID, '{} has left the session!'.format(user.username))
+        else:
+            context.bot.sendMessage(chatID, '{} is not even in the session bro.'.format(user.username))
+
+
+
+
+
 
         
 
