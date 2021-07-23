@@ -60,7 +60,7 @@ class Session:
             else:
                 self.userList[key].setAssigned(self.userList[keys[index + 1]])
         for i in self.userList.values():
-            self.messageUser(i.userId, "What is your address? Please type '/details' followed by your current address and any extra note you would like to add for the sender!")
+            self.messageUser(i.userId, "What is your address? Please type '/details' followed by your current address and any extra note you would like to add for the sender! \n(eg /details 21 Lower Kent Ridge Rd, Singapore 119077, Vegetarian")
 
 
 
