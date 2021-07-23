@@ -10,7 +10,7 @@ class Session:
         self.userList = {}
 
     def addUser(self, user):
-        newUser = User(self.chatID, user.username, user.userid)
+        newUser = User(self.chatID, user.username, user.id)
         self.userList[user.id] = newUser
 
     def removeUser(self, userID):
