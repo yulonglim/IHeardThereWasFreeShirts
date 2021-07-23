@@ -11,7 +11,6 @@ class User:
 		self.order = 0
 
 
-
 	def setAddress(self, address):
 		self.address = address
 	

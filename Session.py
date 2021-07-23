@@ -19,13 +19,12 @@ class Session:
 
     def addUser(self, user):
         if user.id not in self.userList:
-            newUser = User(self.chatID, user.username, user.id)    
+            newUser = User(self.chatID, user.username, user.id)
             self.userList[user.id] = newUser
             self.messageUser(user.id, 'You have opted in')
             return True
         else:
             return False
-        
 
     def removeUser(self, user):
         if user.id in self.userList:
@@ -35,6 +34,10 @@ class Session:
         else:
             return False
 
+    def getUserList(self):
+        print(list(self.userList.keys()))
+        return list(self.userList.keys())
+
     def startSession(self):
         if self.status:
             return False
@@ -42,8 +45,6 @@ class Session:
             self.status = True
             self.startAssignment()
             return True
-
-
 
     def startAssignment(self):
         # randomise the start assignment thingy, assign each user a random user
@@ -57,7 +58,8 @@ class Session:
             else:
                 self.userList[key].setAssigned(self.userList[keys[index + 1]])
         for i in self.userList.values():
-            self.messageUser(i.userId, "What is your address?")
+            self.messageUser(i.userId, "What is your address? Please type '/details' followed by your current address and any extra note you would like to add for the sender!")
+
 
 
     def messageUser(self, userID , message):

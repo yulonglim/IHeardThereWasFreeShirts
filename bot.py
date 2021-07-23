@@ -27,6 +27,7 @@ from db import (
     sessionExists,
     addSession,
     getSession,
+    getSessions,
     deleteSession
 )
 
@@ -155,6 +156,7 @@ def setPriceRange(update, context):
     context.bot_data.update(payload)
 
 
+
 def receivePollAnswer(update: Update, context: CallbackContext) -> None:
     poll_id = update.poll.id
 
@@ -190,13 +192,15 @@ def receivePollAnswer(update: Update, context: CallbackContext) -> None:
         context.bot.stop_poll(quiz_data["chat_id"], quiz_data["message_id"])
 
 
-def inputDetail(update, context):
-    return 0
-    # address = update.message.text
-    # currentUser = update.effective_user
-    # session = getSession(update.effective_chat.id)
-    # session.userList[currentUser.id].setAddress(str(address))
-    # print(address)
+def getDetail(update, context):
+    address = update.message.text
+    currentUser = update.effective_user.id
+    allsess = getSessions()
+    for i in allsess:
+        if allsess[i].getUserList().__contains__(currentUser):
+            session = i
+    session.userList[currentUser.id].setAddress(str(address))
+    print(address)
 
 
 def test(update, context):
@@ -218,7 +222,7 @@ def main():
 
     dispatcher.add_handler(CommandHandler('randomassign', test))
 
-    dispatcher.add_handler(CommandHandler('details', inputDetail))
+    dispatcher.add_handler(CommandHandler('details', getDetail))
 
     dispatcher.add_handler(PollHandler(receivePollAnswer))
 
