@@ -1,4 +1,4 @@
-import User
+from User import User
 
 class Session:
     # Constructor
@@ -10,8 +10,13 @@ class Session:
         self.userList = {}
 
     def addUser(self, user):
-        newUser = User(self.chatID, user.username, user.id)
-        self.userList[user.id] = newUser
+        if user.id not in self.userList:
+            newUser = User(self.chatID, user.username, user.id)    
+            self.userList[user.id] = newUser
+            return True
+        else:
+            return False
+        
 
     def removeUser(self, userID):
         del self.userList[userID]

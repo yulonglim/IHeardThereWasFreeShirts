@@ -48,6 +48,8 @@ This bot allows you to eat with your fwiends UwU
 sessionMessage = 0
 
 def startSession(update, context):
+    global sessionMessage
+    
     chatID = update.effective_chat.id
     if chatID > 0:
         # User sent this message
@@ -73,9 +75,8 @@ def closeSession(update, context) -> None:
     # Generate message
     chatID = update.effective_chat.id
     users = getSession(chatID).userList
-    textString = "Session closed\nThose in the session:\n"
-    for user in users.values:
-        textString = textString + user.name + '\n'
+    print(users)
+    textString = "Session closed"
     textString = textString + "Your randomised assignments will be PMed to you shortly"
 
     # Delete session and reset session
@@ -101,9 +102,14 @@ def button(update: Update, context: CallbackContext) -> None:
         chatID = update.effective_chat.id
 
         # Add user to Session
-        context.bot.sendMessage(chatID, '{} joined the session!'.format(user.username))
-        session = getSession(update.effective_chat.id);
-        session.addUser(user)
+        session = getSession(update.effective_chat.id)
+
+        if (session.addUser(user)):
+            context.bot.sendMessage(chatID, '{} joined the session!'.format(user.username))
+        else:
+            context.bot.sendMessage(chatID, '{} is already in the session!'.format(user.username))
+
+        
 
 
 
