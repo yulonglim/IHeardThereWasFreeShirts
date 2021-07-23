@@ -1,5 +1,7 @@
-import logging
+import bs4, sys, requests, os, logging, re
 from telegram import (
+    ReplyKeyboardMarkup, 
+    ReplyKeyboardRemove, 
     InlineKeyboardMarkup,
     InlineKeyboardButton,
     Update,
@@ -9,6 +11,9 @@ from telegram import (
 from telegram.ext import (
     Updater,
     CommandHandler,
+    MessageHandler,
+    Filters,
+    ConversationHandler,
     CallbackContext,
     CallbackQueryHandler,
     PollHandler,
@@ -32,6 +37,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 
 
+
+
 # /start command
 def start(update, context):
     name = update.message.from_user.first_name;
@@ -42,7 +49,10 @@ This bot allows you to eat with your fwiends UwU
 """.format(name))
 
 
+sessionMessage = 0
+
 def startSession(update, context):
+    global sessionMessage
     
     chatID = update.effective_chat.id
     if chatID > 0:
@@ -59,23 +69,26 @@ def startSession(update, context):
             [InlineKeyboardButton("Start", callback_data="Start")]
             ]
         reply_markup=InlineKeyboardMarkup(reply_keyboard)
-        getSession(chatID).sessionMessage = context.bot.sendMessage(chatID, 'A new FOODSANTA session has been created! 🎅 Click Join to participate!', reply_markup = reply_markup)
+        sessionMessage = context.bot.sendMessage(chatID, 'Hey yall, click join to participate in this session. Once everydone is done, you may /closesession', reply_markup = reply_markup)
 
     else:
         # Session already exists in group
         context.bot.send_message(chatID, text = """
-dude a session alr exists.""")
+dude wtf a session alr exists.""")
         
 
 def closeSession(update, context) -> None:
+    global sessionMessage
+
     # Generate message
     chatID = update.effective_chat.id
+    textString = "Randomising assignments"
 
     # Delete and reset session
-    context.bot.delete_message(chat_id=chatID, message_id=getSession(chatID).sessionMessage.message_id)
-
+    context.bot.delete_message(chat_id=chatID, message_id=sessionMessage.message_id)
+    sessionMessage = 0
     if (deleteSession(chatID)):
-        context.bot.send_message(chatID, text = "Session closed. Type /startsession to start another.")
+        context.bot.send_message(chatID, text = "Session closed")
     else:
         context.bot.send_message(chatID, text = "There's no session to delete bruh")
 
@@ -115,7 +128,7 @@ def button(update: Update, context: CallbackContext) -> None:
         else:
             context.bot.sendMessage(chatID, '{} is not even in the session bro.'.format(user.username))
     elif choice == 'Start':
-        # Get chat ID
+                 # Get chat ID
         chatID = update.effective_chat.id
 
         # Add user to Session
@@ -153,10 +166,13 @@ def receivePollAnswer(update: Update, context: CallbackContext) -> None:
 
     chatID = context.bot_data[poll_id]['chat_id']
     
+
+    # TODO Change from checking voter count to who checking who voted
     if update.poll.total_voter_count == len(getSession(chatID).userList):
         try:
             quiz_data = context.bot_data[update.poll.id]
             
+
             # Get array of PollOption objects
             optionArray = update.poll.options
             highestVote = 0
@@ -164,12 +180,11 @@ def receivePollAnswer(update: Update, context: CallbackContext) -> None:
             for option in optionArray:
                 if option.voter_count > highestVote:
                     highestPrice = option.text
-                    highestVote = option.voter_count
-
-            print(highestPrice)
             getSession(chatID).priceRange = highestPrice
 
-            context.bot.sendMessage(chatID, "As per the votes, your recommended price range is {}. Check your DMs if you haven't done so".format(highestPrice))
+            context.bot.sendMessage(chatID, 'As per the votes, your recommended price range is {}. Check your DMs'.format(highestPrice))
+
+            # TODO carry on the process (Get highest option, PM the participants)
 
         # poll answer update is from an old poll
         except KeyError:
@@ -200,7 +215,7 @@ def getDetail(update, context):
     update.message.reply_text("You've sent " + address3 + ". Please wait for the rest to complete their entry!")
     if finished == True:
         for user in getSession(sess).userList.values():
-            Session.messageUser(getSession(sess), user.userId, "Hello your sender said " + user.assigned.address)
+            Session.messageUser(getSession(sess), user.userId, "Hello! you'll be sending your goods to "+ user.assigned.username + " here are the details: " + user.assigned.address + ". Have Fun!!!!")
 
 
 def test(update, context):
@@ -233,3 +248,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
+
+
+

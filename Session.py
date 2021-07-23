@@ -62,8 +62,6 @@ class Session:
         for i in self.userList.values():
             self.messageUser(i.userId, "What is your address? Please type '/details' followed by your current address and any extra note you would like to add for the sender! \n(eg /details 21 Lower Kent Ridge Rd, Singapore 119077, Vegetarian")
 
-
-
     def messageUser(self, userID , message):
         # call this function everytime we assign a user. A user is ready to be messaged when he/she has the assigned user field.
         send_text = 'https://api.telegram.org/bot1855391169:AAGuzaD2E6AA_mDPXRIuhT5IPv9JZ3ERlFU/sendMessage?chat_id=' + str(userID) + '&parse_mode=Markdown&text=' + message
