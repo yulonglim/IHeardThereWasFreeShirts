@@ -72,13 +72,12 @@ def closeSession(update, context) -> None:
 
     # Generate message
     chatID = update.effective_chat.id
-    textString = "Randomising assignments"
 
     # Delete and reset session
     context.bot.delete_message(chat_id=chatID, message_id=sessionMessage.message_id)
     sessionMessage = 0
     if (deleteSession(chatID)):
-        context.bot.send_message(chatID, text = "Session closed")
+        context.bot.send_message(chatID, text = "Session closed. /startsession again to restart")
     else:
         context.bot.send_message(chatID, text = "There's no session to delete bruh")
 
@@ -117,14 +116,15 @@ def button(update: Update, context: CallbackContext) -> None:
             context.bot.sendMessage(chatID, '{} has left the session!'.format(user.username))
         else:
             context.bot.sendMessage(chatID, '{} is not even in the session bro.'.format(user.username))
+    # Start the current session once everyone is ready
     elif choice == 'Start':
-                 # Get chat ID
+        # Get chat ID
         chatID = update.effective_chat.id
-
-        # Add user to Session
         session = getSession(update.effective_chat.id)
 
-        if session.startSession():
+        if len(session.userList) < 2:
+            context.bot.sendMessage(chatID, 'There are not enough participants to start a session :(')
+        elif session.startSession():
             context.bot.sendMessage(chatID, 'Session started! Check your DMs! Meanwhile...')
             setPriceRange(update, context);
         else:
@@ -178,6 +178,7 @@ def receivePollAnswer(update: Update, context: CallbackContext) -> None:
 
 
 def getDetail(update, context):
+    sess = None
     address = update.message.text.split(" ")
     address2 = address[1:]
     address3 = ''
@@ -189,6 +190,9 @@ def getDetail(update, context):
         if currentUser in getSession(sess).userList.keys():
             getSession(sess).userList[currentUser].setAddress(str(address3))
             break
+
+    if (sess == None):
+        return 
 
     finished = True
     for user in getSession(sess).userList.values():
