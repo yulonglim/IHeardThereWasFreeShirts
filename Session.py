@@ -18,8 +18,12 @@ class Session:
             return False
         
 
-    def removeUser(self, userID):
-        del self.userList[userID]
+    def removeUser(self, user):
+        if user.id in self.userList:
+            del self.userList[user.id]
+            return True
+        else:
+            return False
 
 
     # MUTATORS
