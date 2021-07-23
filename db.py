@@ -14,7 +14,7 @@ def sessionExists(chatID):
 
 def deleteSession(chatID):
     if sessionExists(chatID):
-        del sessions["chatID"]
+        del sessions[chatID]
         return True
     else:
         return False
