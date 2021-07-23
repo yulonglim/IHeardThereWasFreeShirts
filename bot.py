@@ -1,19 +1,12 @@
 import bs4, sys, requests, os, logging, re
 from telegram import (
-    ReplyKeyboardMarkup, 
-    ReplyKeyboardRemove, 
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    Update,
-    chat,
-    poll
+    Update
 )
 from telegram.ext import (
     Updater,
     CommandHandler,
-    MessageHandler,
-    Filters,
-    ConversationHandler,
     CallbackContext,
     CallbackQueryHandler,
     PollHandler,
@@ -34,9 +27,6 @@ from db import (
 #Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
-
-
-
 
 
 # /start command
@@ -69,7 +59,7 @@ def startSession(update, context):
             [InlineKeyboardButton("Start", callback_data="Start")]
             ]
         reply_markup=InlineKeyboardMarkup(reply_keyboard)
-        sessionMessage = context.bot.sendMessage(chatID, 'Hey yall, click join to participate in this session. Once everydone is done, you may /closesession', reply_markup = reply_markup)
+        sessionMessage = context.bot.sendMessage(chatID, 'Hey yall, a FOOD SANTA 🎅 session has been created! Click join to participate in this session.', reply_markup = reply_markup)
 
     else:
         # Session already exists in group
@@ -101,7 +91,6 @@ def button(update: Update, context: CallbackContext) -> None:
     choice = query.data
     
     # Add user to current session
-    
     if choice == 'Join':
         # Get chat ID
         chatID = update.effective_chat.id
@@ -115,6 +104,7 @@ def button(update: Update, context: CallbackContext) -> None:
             context.bot.sendMessage(chatID, '{} joined the session!'.format(user.username))
         else:
             context.bot.sendMessage(chatID, '{} is already in the session!'.format(user.username))
+    # Remove user from current session
     elif choice == 'Leave':
                  # Get chat ID
         chatID = update.effective_chat.id
@@ -147,7 +137,6 @@ def setPriceRange(update, context):
     chatID = update.effective_chat.id
     message = context.bot.send_poll(chatID, "Let's standardise a price range!", options, is_anonymous=False)
 
-
     # Save some info about the poll the bot_data for later use in receivePollAnswer
     payload = {
         message.poll.id: {"chat_id": update.effective_chat.id, "message_id": message.message_id}
@@ -165,9 +154,6 @@ def receivePollAnswer(update: Update, context: CallbackContext) -> None:
         return
 
     chatID = context.bot_data[poll_id]['chat_id']
-    
-
-    # TODO Change from checking voter count to who checking who voted
     if update.poll.total_voter_count == len(getSession(chatID).userList):
         try:
             quiz_data = context.bot_data[update.poll.id]
@@ -180,11 +166,10 @@ def receivePollAnswer(update: Update, context: CallbackContext) -> None:
             for option in optionArray:
                 if option.voter_count > highestVote:
                     highestPrice = option.text
+                    highestVote = option.voter_count
             getSession(chatID).priceRange = highestPrice
 
             context.bot.sendMessage(chatID, 'As per the votes, your recommended price range is {}. Check your DMs'.format(highestPrice))
-
-            # TODO carry on the process (Get highest option, PM the participants)
 
         # poll answer update is from an old poll
         except KeyError:
@@ -215,7 +200,7 @@ def getDetail(update, context):
     update.message.reply_text("You've sent " + address3 + ". Please wait for the rest to complete their entry!")
     if finished == True:
         for user in getSession(sess).userList.values():
-            Session.messageUser(getSession(sess), user.userId, "Hello! you'll be sending your goods to "+ user.assigned.username + " here are the details: " + user.assigned.address + ". Have Fun!!!!")
+            Session.messageUser(getSession(sess), user.userId, "Hello! you'll be sending your goods to "+ user.assigned.username + ", here are the details: " + user.assigned.address + ". Have Fun!!!!")
 
 
 def test(update, context):
