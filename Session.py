@@ -17,6 +17,9 @@ class Session:
         # Price range for the group
         self.priceRange = ""
 
+        #Message to delete once session is deleted
+        self.sessionMessage = None
+
     def addUser(self, user):
         if user.id not in self.userList:
             newUser = User(self.chatID, user.username, user.id)
