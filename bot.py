@@ -4,7 +4,8 @@ from telegram import (
     ReplyKeyboardRemove, 
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    Update
+    Update,
+    chat
 )
 from telegram.ext import (
     Updater,
@@ -44,9 +45,11 @@ This bot allows you to eat with your fwiends UwU
 """.format(name))
 
 
-sessionMessageID = 0
+sessionMessage = 0
 
 def startSession(update, context):
+    global sessionMessage
+    
     chatID = update.effective_chat.id
     if chatID > 0:
         # User sent this message
@@ -62,7 +65,7 @@ def startSession(update, context):
             [InlineKeyboardButton("Start", callback_data="Start")]
             ]
         reply_markup=InlineKeyboardMarkup(reply_keyboard)
-        context.bot.sendMessage(chatID, 'Hey yall, click join to participate in this session. Once everydone is done, you may /closesession', reply_markup = reply_markup)
+        sessionMessage = context.bot.sendMessage(chatID, 'Hey yall, click join to participate in this session. Once everydone is done, you may /closesession', reply_markup = reply_markup)
 
     else:
         # Session already exists in group
@@ -71,11 +74,20 @@ dude wtf a session alr exists.""")
         
 
 def closeSession(update, context) -> None:
+    global sessionMessage
+
+    # Generate message
     chatID = update.effective_chat.id
     users = getSession(chatID).userList
-    textString = "Session closed\nThose in the session:\n"
-    for user in users.values:
-        textString = textString + user.name + '\n'
+    print(users)
+    textString = "Session closed"
+    textString = textString + "Your randomised assignments will be PMed to you shortly"
+
+    # Delete session and reset session
+    context.bot.delete_message(chat_id=chatID, message_id=sessionMessage.message_id)
+    sessionMessage = 0
+
+    # Send out confirmation message
     context.bot.send_message(chatID, text = textString)
 
 
