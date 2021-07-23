@@ -215,7 +215,7 @@ def getDetail(update, context):
     update.message.reply_text("You've sent " + address3 + ". Please wait for the rest to complete their entry!")
     if finished == True:
         for user in getSession(sess).userList.values():
-            Session.messageUser(getSession(sess), user.userId, "Hello your sender said " + user.assigned.address)
+            Session.messageUser(getSession(sess), user.userId, "Hello! you'll be sending your goods to "+ user.assigned.username + " here are the details: " + user.assigned.address + ". Have Fun!!!!")
 
 
 def test(update, context):
