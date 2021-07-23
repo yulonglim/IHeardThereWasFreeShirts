@@ -5,6 +5,7 @@ class Session:
     def __init__(self, chatID):
         # ChatID that this session exists in
         self.chatID = chatID
+        self.status = False
 
         # List of Users in the session.
         self.userList = {}
@@ -30,6 +31,13 @@ class Session:
     # def setRequestedIndex(self, index):
     #     self.requestedIndex = index
 
+    def startSession(self):
+        if self.status:
+            return False
+        else:
+            self.status = True
+            self.startAssignment()
+            return True
 
 
 

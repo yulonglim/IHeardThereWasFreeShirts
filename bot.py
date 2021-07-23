@@ -109,7 +109,9 @@ def button(update: Update, context: CallbackContext) -> None:
         # Add user to Session
         session = getSession(update.effective_chat.id)
 
-        if (session.addUser(user)):
+        if session.status:
+            context.bot.sendMessage(chatID, 'Session has already started')
+        elif (session.addUser(user)):
             context.bot.sendMessage(chatID, '{} joined the session!'.format(user.username))
         else:
             context.bot.sendMessage(chatID, '{} is already in the session!'.format(user.username))
@@ -119,6 +121,8 @@ def button(update: Update, context: CallbackContext) -> None:
 
         # Add user to Session
         session = getSession(update.effective_chat.id)
+        if session.status:
+            context.bot.sendMessage(chatID, 'Session has already started')
         if (session.removeUser(user)):
             context.bot.sendMessage(chatID, '{} has left the session!'.format(user.username))
         else:
@@ -130,8 +134,11 @@ def button(update: Update, context: CallbackContext) -> None:
         # Add user to Session
         session = getSession(update.effective_chat.id)
 
-        session.startSession()
-        context.bot.sendMessage(chatID, '{} is not even in the session bro.'.format(user.username))
+        if session.startSession():
+            context.bot.sendMessage(chatID, 'Session started. Check your DMs.'.format(user.username))
+        else:
+            context.bot.sendMessage(chatID, 'Session already started. Check your DMs.'.format(user.username))
+
 
 
 
