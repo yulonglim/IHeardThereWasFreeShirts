@@ -6,7 +6,6 @@ class User:
 		self.userId = userId
 		self.address = ""
 		self.hunger = 0
-		self.diet = ""
 		self.assigned = None
 		self.order = 0
 
@@ -19,9 +18,6 @@ class User:
 
 	def setOrder(self, order):
 		self.order = order
-
-	def diet(self, diet):
-		self.diet = diet
 
 	def getUsersDiet(self, user):
 		return user.diet

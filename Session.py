@@ -50,7 +50,6 @@ class Session:
         # randomise the start assignment thingy, assign each user a random user
         # for loop through the dictionary and use the inbuilt add user function
         keys = list(self.userList.keys())
-        print(keys)
         random.shuffle(keys)
         for index, key in enumerate(keys):
             if index + 1 == len(keys):

@@ -193,14 +193,29 @@ def receivePollAnswer(update: Update, context: CallbackContext) -> None:
 
 
 def getDetail(update, context):
-    address = update.message.text
+    address = update.message.text.split(" ")
+    address2 = address[1:]
+    address3 = ''
+    for i in address2:
+        address3 += i + " "
     currentUser = update.effective_user.id
     allsess = getSessions()
-    for i in allsess:
-        if allsess[i].getUserList().__contains__(currentUser):
-            session = i
-    session.userList[currentUser.id].setAddress(str(address))
-    print(address)
+    for sess in allsess:
+        if currentUser in getSession(sess).userList.keys():
+            getSession(sess).userList[currentUser].setAddress(str(address3))
+            break
+
+    finished = True
+    for user in getSession(sess).userList.values():
+        if user.address == "":
+            finished = False
+        else:
+            finished = finished & True
+
+    update.message.reply_text("You've sent " + address3 + ". Please wait for the rest to complete their entry!")
+    if finished == True:
+        for user in getSession(sess).userList.values():
+            Session.messageUser(getSession(sess), user.userId, "Hello your sender said " + user.assigned.address)
 
 
 def test(update, context):
