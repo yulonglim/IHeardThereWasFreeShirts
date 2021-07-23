@@ -134,15 +134,17 @@ def button(update: Update, context: CallbackContext) -> None:
         session = getSession(update.effective_chat.id)
 
         if session.startSession():
-            context.bot.sendMessage(chatID, 'Session started!')
+            context.bot.sendMessage(chatID, 'Session started! Check your DMs! Meanwhile...')
             setPriceRange(update, context);
         else:
             context.bot.sendMessage(chatID, 'Session already started. Check your DMs.')
 
+
+
 def setPriceRange(update, context):
     options = ['<$5','$5 - $10','$10 - $15', '$15 - $20', '>$20']
     chatID = update.effective_chat.id
-    message = context.bot.send_poll(chatID, "Let's standardise a price range! /next to continue the process", options, is_anonymous=False)
+    message = context.bot.send_poll(chatID, "Let's standardise a price range!", options, is_anonymous=False)
 
 
     # Save some info about the poll the bot_data for later use in receivePollAnswer
@@ -161,6 +163,9 @@ def receivePollAnswer(update: Update, context: CallbackContext) -> None:
         return
 
     chatID = context.bot_data[poll_id]['chat_id']
+    
+
+    # TODO Change from checking voter count to who checking who voted
     if update.poll.total_voter_count == len(getSession(chatID).userList):
         try:
             quiz_data = context.bot_data[update.poll.id]

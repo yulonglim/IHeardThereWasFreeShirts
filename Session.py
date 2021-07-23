@@ -35,11 +35,6 @@ class Session:
         else:
             return False
 
-
-    # MUTATORS
-    # def setRequestedIndex(self, index):
-    #     self.requestedIndex = index
-
     def startSession(self):
         if self.status:
             return False
