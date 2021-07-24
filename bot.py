@@ -1,4 +1,5 @@
 import bs4, sys, requests, os, logging, re
+from dotenv import load_dotenv
 from telegram import (
     ReplyKeyboardMarkup, 
     ReplyKeyboardRemove, 
@@ -35,8 +36,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                      level=logging.INFO)
 
 
-
-
+# use env file
+load_dotenv()
 
 # /start command
 def start(update, context):
@@ -189,7 +190,7 @@ def test(update, context):
 
 
 def main():
-    updater = Updater(token = '1855391169:AAGuzaD2E6AA_mDPXRIuhT5IPv9JZ3ERlFU', use_context = True)
+    updater = Updater(token = os.getenv('TOKEN'), use_context = True)
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler('start', start))
