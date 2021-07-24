@@ -9,6 +9,9 @@ def addSession(chatID):
 def getSession(chatID):
     return sessions[chatID]
 
+def getSessions():
+    return sessions
+
 def sessionExists(chatID):
     return (chatID in sessions.keys())
 
