@@ -1,3 +1,4 @@
+import os
 import random
 import requests
 from User import User
@@ -62,7 +63,7 @@ class Session:
 
     def messageUser(self, userID , message):
         # call this function everytime we assign a user. A user is ready to be messaged when he/she has the assigned user field.
-        send_text = 'https://api.telegram.org/bot1855391169:AAGuzaD2E6AA_mDPXRIuhT5IPv9JZ3ERlFU/sendMessage?chat_id=' + str(userID) + '&parse_mode=Markdown&text=' + message
+        send_text = 'https://api.telegram.org/bot'+os.getenv('TOKEN')+'/sendMessage?chat_id=' + str(userID) + '&parse_mode=Markdown&text=' + message
 
         response = requests.get(send_text)
 
